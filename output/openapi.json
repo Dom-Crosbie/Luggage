@@ -1,0 +1,274 @@
+{
+  "openapi" : "3.0.0",
+  "info" : {
+    "title" : "Sample Password Flow OAuth2 Project",
+    "description" : "This is an example of using OAuth2 Password Flow in a specification to describe security to your API. Rate Limiting is applied to ensure fair usage and prevent abuse.",
+    "version" : "1.0.1"
+  },
+  "servers" : [ {
+    "url" : "https://virtserver.swaggerhub.com/domcrosbie-cc0/AirportLuggageAPI/1.0.1",
+    "description" : "SwaggerHub API Auto Mocking"
+  } ],
+  "security" : [ {
+    "password" : [ "read", "write" ]
+  } ],
+  "paths" : {
+    "/example" : {
+      "get" : {
+        "summary" : "Server example operation",
+        "description" : "This is an example operation to show how security is applied to the call. Rate Limiting is enforced to protect the API.",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        }
+      }
+    },
+    "/ping" : {
+      "get" : {
+        "summary" : "Server heartbeat operation",
+        "description" : "This operation shows how to override the global security defined above, as we want to open it up for all users. Rate Limiting is not applied here.",
+        "responses" : {
+          "200" : {
+            "description" : "OK"
+          }
+        },
+        "security" : [ ]
+      }
+    },
+    "/luggage" : {
+      "get" : {
+        "summary" : "List all luggage items",
+        "description" : "Retrieve a list of all luggage items in the system. Rate Limiting applies to this endpoint.",
+        "operationId" : "listLuggage",
+        "responses" : {
+          "200" : {
+            "description" : "A list of luggage items",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/Luggage"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post" : {
+        "summary" : "Create a new luggage item",
+        "description" : "Create a new luggage record in the system. Rate Limiting applies to this endpoint.",
+        "operationId" : "createLuggage",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LuggageCreate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "description" : "Luggage item created successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Luggage"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/luggage/{luggageId}" : {
+      "get" : {
+        "summary" : "Retrieve a luggage item by ID",
+        "description" : "Get detailed information about a specific luggage item. Rate Limiting applies to this endpoint.",
+        "operationId" : "getLuggageById",
+        "parameters" : [ {
+          "name" : "luggageId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "description" : "Luggage item details",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Luggage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Luggage item not found"
+          }
+        }
+      },
+      "put" : {
+        "summary" : "Update a luggage item",
+        "description" : "Update details of an existing luggage item. Rate Limiting applies to this endpoint.",
+        "operationId" : "updateLuggage",
+        "parameters" : [ {
+          "name" : "luggageId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/LuggageUpdate"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "description" : "Luggage item updated successfully",
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Luggage"
+                }
+              }
+            }
+          },
+          "404" : {
+            "description" : "Luggage item not found"
+          }
+        }
+      },
+      "delete" : {
+        "summary" : "Delete a luggage item",
+        "description" : "Remove a luggage item from the system. Rate Limiting applies to this endpoint.",
+        "operationId" : "deleteLuggage",
+        "parameters" : [ {
+          "name" : "luggageId",
+          "in" : "path",
+          "required" : true,
+          "style" : "simple",
+          "explode" : false,
+          "schema" : {
+            "type" : "string"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "Luggage item deleted successfully"
+          },
+          "404" : {
+            "description" : "Luggage item not found"
+          }
+        }
+      }
+    }
+  },
+  "components" : {
+    "schemas" : {
+      "Luggage" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "description" : "Unique identifier for the luggage"
+          },
+          "ownerName" : {
+            "type" : "string",
+            "description" : "Name of the luggage owner"
+          },
+          "flightNumber" : {
+            "type" : "string",
+            "description" : "Flight number associated with the luggage"
+          },
+          "weight" : {
+            "type" : "number",
+            "description" : "Weight of the luggage in kilograms",
+            "format" : "float"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Current status of the luggage",
+            "enum" : [ "checked-in", "in-transit", "delivered", "lost" ]
+          }
+        },
+        "description" : "A luggage item in the airport system"
+      },
+      "LuggageCreate" : {
+        "required" : [ "flightNumber", "ownerName", "weight" ],
+        "type" : "object",
+        "properties" : {
+          "ownerName" : {
+            "type" : "string",
+            "description" : "Name of the luggage owner"
+          },
+          "flightNumber" : {
+            "type" : "string",
+            "description" : "Flight number associated with the luggage"
+          },
+          "weight" : {
+            "type" : "number",
+            "description" : "Weight of the luggage in kilograms",
+            "format" : "float"
+          }
+        },
+        "description" : "Payload to create a new luggage item"
+      },
+      "LuggageUpdate" : {
+        "type" : "object",
+        "properties" : {
+          "ownerName" : {
+            "type" : "string",
+            "description" : "Name of the luggage owner"
+          },
+          "flightNumber" : {
+            "type" : "string",
+            "description" : "Flight number associated with the luggage"
+          },
+          "weight" : {
+            "type" : "number",
+            "description" : "Weight of the luggage in kilograms",
+            "format" : "float"
+          },
+          "status" : {
+            "type" : "string",
+            "description" : "Current status of the luggage",
+            "enum" : [ "checked-in", "in-transit", "delivered", "lost" ]
+          }
+        },
+        "description" : "Payload to update an existing luggage item"
+      }
+    },
+    "securitySchemes" : {
+      "password" : {
+        "type" : "oauth2",
+        "flows" : {
+          "password" : {
+            "tokenUrl" : "http://example.com/oauth/token",
+            "scopes" : {
+              "write" : "allows modifying resources",
+              "read" : "allows reading resources"
+            }
+          }
+        }
+      }
+    }
+  }
+}
