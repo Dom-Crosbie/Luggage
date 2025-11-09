@@ -1,7 +1,7 @@
 {
   "openapi" : "3.0.0",
   "info" : {
-    "title" : "Sample Password Flow OAuth2 Project",
+    "title" : "Luggage API",
     "description" : "This is an example of using OAuth2 Password Flow in a specification to describe security to your API. Rate Limiting is applied to ensure fair usage and prevent abuse.",
     "version" : "1.0.1"
   },
